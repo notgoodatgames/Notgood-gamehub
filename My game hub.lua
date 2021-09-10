@@ -144,9 +144,121 @@ elseif game.PlaceId == 155615604 then
             noclip = false
             print("Toggle Off")
         end
-    end)
+    end) 
     
+     MainSection:NewToggle("KillArua", "Kills people when they are near you", function(state)
+        if state then 
+           _G.Runningg = true
 
+	while _G.Runningg == true do wait()
+		for i,v in pairs(game.Players:GetChildren()) do
+			if v.Name ~= game.Players.LocalPlayer.Name then
+				local tbl_main = 
+					{
+						v
+					}
+				game:GetService("ReplicatedStorage").meleeEvent:FireServer(unpack(tbl_main))
+			end
+		end
+	end
+
+            
+            print("Toggle On")
+        else 
+            _G.Runningg = false
+            print("Toggle Off")
+        end
+    end) 
+
+    MainSection:NewButton("GodMode", "No one can kill you", function() 
+        local Player = game.Players.LocalPlayer
+        local Character = Player.Character
+        local Humanoid = Character.Humanoid
+        
+        print('Godmode working.')
+        
+        Humanoid.MaxHealth = 999999
+        Humanoid.Health = Humanoid.MaxHealth / 2
+        
+        Humanoid.HealthChanged:connect(function()
+        	if Humanoid.Health < 10 then
+        		Humanoid.Health = Humanoid.MaxHealth
+	        end
+        end)
+        print("Clicked")
+    end) 
+    
+    MainSection:NewButton("Invis", "No one can see you", function() 
+        local player = game.Players.LocalPlayer
+        position = player.Character.HumanoidRootPart.Position
+        wait(0.1)
+        player.Character:MoveTo(position + Vector3.new(0, 1000000, 0))
+        wait(0.1)
+        humanoidrootpart = player.Character.HumanoidRootPart:clone()
+        wait(0.1)
+        player.Character.HumanoidRootPart:Destroy()
+        humanoidrootpart.Parent = player.Character
+        player.Character:MoveTo(position)
+        wait()
+
+        print("Clicked")
+    end) 
+    
+    MainSection:NewButton("Removes Walls", "Takes away Walls", function() 
+        wait(0.1)
+        game.Workspace.Prison_Guard_Outpost:Remove()
+         
+        wait(0.1)
+        game.Workspace.Prison_Cafeteria.building:Remove()
+         
+        wait(0.1)
+        game.Workspace.Prison_Cafeteria.glass:Remove()
+         
+        wait(0.1)
+        game.Workspace.Prison_Cafeteria.oven:Remove()
+         
+        wait(0.1)
+        game.Workspace.Prison_Cafeteria.shelves:Remove()
+         
+        wait(0.1)
+        game.Workspace.Prison_Cafeteria.vents:Remove()
+         
+        wait(0.1)
+        game.Workspace.Prison_Cafeteria.accents:Remove()
+         
+        wait(0.1)
+        game.Workspace.Prison_Cafeteria.vendingmachine:Remove()
+         
+        wait(0.1)
+        game.Workspace.Prison_Cafeteria.Prison_table1:Remove()
+         
+        wait(0.1)
+        game.Workspace.Prison_Cafeteria.counter:Remove()
+         
+        wait(0.1)
+        game.Workspace.Prison_Cafeteria.boxes:Remove()
+        print("Clicked")
+    end)
+        
+    MainSection:NewButton("ArrestsCrims", "arrests all Crims", function() 
+        local Player = game.Players.LocalPlayer
+        local cpos = Player.Character.HumanoidRootPart.CFrame
+        for i,v in pairs(game.Teams.Criminals:GetPlayers()) do
+        if v.Name ~= Player.Name then
+        local i = 10
+            repeat
+            wait()
+            i = i-1
+            game.Workspace.Remote.arrest:InvokeServer(v.Character.HumanoidRootPart)
+            Player.Character.HumanoidRootPart.CFrame = v.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 1)
+            until i == 0
+        end
+        end
+        Player.Character.HumanoidRootPart.CFrame = cpos
+        print("Clicked")
+    end)    
+        
+       
 
 
     local Player = Window:NewTab("Player")
@@ -178,8 +290,11 @@ elseif game.PlaceId == 155615604 then
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(798.999756, 95.1383057, 2540.5)
         print("Clicked")
     end) 
-end 
+end
 
+
+    
+   
 
     
 
