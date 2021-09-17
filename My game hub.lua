@@ -1,4 +1,4 @@
-if game.PlaceId == 3956818381 then 
+f game.PlaceId == 3956818381 then 
  
 
     getgenv().autoTap = false 
