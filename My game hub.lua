@@ -149,21 +149,18 @@ elseif game.PlaceId == 155615604 then
      MainSection:NewToggle("KillArua", "Kills people when they are near you", function(state)
         if state then 
            _G.Runningg = true
-
-	while _G.Runningg == true do wait()
-		for i,v in pairs(game.Players:GetChildren()) do
-			if v.Name ~= game.Players.LocalPlayer.Name then
-				local tbl_main = 
-					{
-						v
-					}
-				game:GetService("ReplicatedStorage").meleeEvent:FireServer(unpack(tbl_main))
-			end
-		end
-	end
-
-            
-            print("Toggle On")
+            while _G.Runningg == true do wait()
+		    for i,v in pairs(game.Players:GetChildren()) do
+		    	if v.Name ~= game.Players.LocalPlayer.Name then
+				    local tbl_main = 
+					    {
+						    v
+					    }
+			    	game:GetService("ReplicatedStorage").meleeEvent:FireServer(unpack(tbl_main))
+		    	end
+	    	end
+	    end
+         print("Toggle On")
         else 
             _G.Runningg = false
             print("Toggle Off")
@@ -258,7 +255,18 @@ elseif game.PlaceId == 155615604 then
         print("Clicked")
     end)    
         
-       
+    MainSection:NewButton("Lag server", "", function() 
+        while true do
+            workspace.Remote.TeamEvent:FireServer("Bright blue")
+            for i = 10,500 do
+                for i,v in pairs(Workspace.Prison_ITEMS.clothes:GetChildren()) do
+                lol = Workspace.Remote.ItemHandler:InvokeServer(v.ITEMPICKUP)
+                print("Epic script from PLG")
+            end
+        end
+    end
+        print("Clicked")
+    end)  
 
 
     local Player = Window:NewTab("Player")
@@ -290,42 +298,217 @@ elseif game.PlaceId == 155615604 then
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(798.999756, 95.1383057, 2540.5)
         print("Clicked")
     end) 
+
+elseif game.PlaceId == 5977280685 then 
+    getgenv().autoFarm = false
+    getgenv().autobuy = false 
+    getgenv().autobuy2 = false 
+    
+    function doBuy2() 
+        spawn(function() 
+            while autobuy2 == true do 
+                local args = {[1] = "buyAllItems",[2] = {["whichItems"] = "Swords", ["whichPlanet"] = "Ground",},}
+                game:GetService("Players").tevitamou.saberEvent:FireServer(unpack(args))
+                wait(0.5) 
+            end 
+        end) 
+    end  
+    
+    function dobuy() 
+        spawn(function() 
+            while autobuy == true do 
+                local args = {[1] = "buyAllItems",[2] = {["whichItems"] = "Crystals",["whichPlanet"] = "Ground",},}
+                game:GetService("Players").tevitamou.saberEvent:FireServer(unpack(args))
+                wait(0.5) 
+            end 
+        end) 
+    end
+    
+    function doFarm() 
+        spawn(function() 
+            while autoFarm == true do 
+                local args = {[1] = "swingBlade",}
+                game:GetService("Players").tevitamou.saberEvent:FireServer(unpack(args)) 
+                wait(0.5) 
+            end 
+        end) 
+    end 
+    
+    local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))() 
+    local Window = Library.CreateLib("Ninja legends 2", "Sentinel") 
+    local Main = Window:NewTab("TabName") 
+    local MainSection = Main:NewSection("Main") 
+    
+        MainSection:NewToggle("Auto Blade", "Swings for you", function(state)
+        if state then 
+            autoFarm = state 
+            doFarm()
+            print("Toggle On")
+        else 
+            autoFarm = false
+            print("Toggle Off")
+        end
+    end)  
+
+        MainSection:NewToggle("Auto Blade", "Buys Blades for you", function(state)
+        if state then 
+            autobuy2 = state 
+            doBuy2()
+            print("Toggle On")
+        else 
+            autobuy2 = false
+            print("Toggle Off")
+        end
+    end) 
+
+        MainSection:NewToggle("AutoCrystal", "auto buys Crytals for you", function(state)
+        if state then 
+            autobuy = state 
+            dobuy()
+            print("Toggle On")
+        else 
+            autobuy = true
+            print("Toggle Off")
+        end
+    end) 
+elseif game.PlaceId == 292439477 then 
+    local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+    local Window = Library.CreateLib("Phantom Forces", "Sentinel") 
+    local Main = Window:NewTab("Main")
+    local MainSection = Main:NewSection("Main") 
+    
+    MainSection:NewButton("Silent Aim", "When you aim near someone it hits someone", function() 
+        -- Credits to integerisqt!
+        -- Have a great day!
+        local Players = game:GetService("Players")
+        local Camera = workspace.CurrentCamera
+        local LocalPlayer = Players.LocalPlayer
+        local Mouse = LocalPlayer:GetMouse()
+        local GameLogic, CharTable, Trajectory
+        for I,V in pairs(getgc(true)) do
+            if type(V) == "table" then
+                if rawget(V, "gammo") then
+                    GameLogic = V
+                end
+            elseif type(V) == "function" then
+                if debug.getinfo(V).name == "getbodyparts" then
+                    CharTable = debug.getupvalue(V, 1)
+                elseif debug.getinfo(V).name == "trajectory" then
+                    Trajectory = V
+                end
+            end
+            if GameLogic and CharTable and Trajectory then break end
+        end
+        
+        local function Closest()
+            local Max, Close = math.huge
+            for I,V in pairs(Players:GetPlayers()) do
+                if V ~= LocalPlayer and V.Team ~= LocalPlayer.Team and CharTable[V] then
+                    local Pos, OnScreen = Camera:WorldToScreenPoint(CharTable[V].head.Position) 
+                    if OnScreen then
+                        local Dist = (Vector2.new(Pos.X, Pos.Y) - Vector2.new(Mouse.X, Mouse.Y)).Magnitude
+                        if Dist < Max then
+                            Max = Dist
+                            Close = V
+                        end
+                    end
+                end
+            end
+            return Close
+        end
+        local MT = getrawmetatable(game)
+        local __index = MT.__index
+        setreadonly(MT, false)
+        MT.__index = newcclosure(function(self, K)
+            if not checkcaller() and GameLogic.currentgun and GameLogic.currentgun.data and (self == GameLogic.currentgun.barrel or tostring(self) == "SightMark") and K == "CFrame" then
+                local CharChosen = (CharTable[Closest()] and CharTable[Closest()].head)
+                if CharChosen then
+                    local _, Time = Trajectory(self.Position, Vector3.new(0, -workspace.Gravity, 0), CharChosen.Position, GameLogic.currentgun.data.bulletspeed)
+                    return CFrame.new(self.Position, CharChosen.Position + (Vector3.new(0, -workspace.Gravity / 2, 0)) * (Time ^ 2) + (CharChosen.Velocity * Time))
+                end
+            end
+            return __index(self, K)
+        end)
+        setreadonly(MT, true)
+                print("Clicked")
+            end) 
+        
+    
+    MainSection:NewButton("Silent Aim (body)", "ButtonInfo", function() 
+        -- Credits to integerisqt!
+        -- Have a great day!
+        local Players = game:GetService("Players")
+        local Camera = workspace.CurrentCamera
+        local LocalPlayer = Players.LocalPlayer
+        local Mouse = LocalPlayer:GetMouse()
+        local GameLogic, CharTable, Trajectory
+        for I,V in pairs(getgc(true)) do
+            if type(V) == "table" then
+                if rawget(V, "gammo") then
+                    GameLogic = V
+                end
+            elseif type(V) == "function" then
+                if debug.getinfo(V).name == "getbodyparts" then
+                    CharTable = debug.getupvalue(V, 1)
+                elseif debug.getinfo(V).name == "trajectory" then
+                    Trajectory = V
+                end
+            end
+            if GameLogic and CharTable and Trajectory then break end
+        end
+        
+        local function Closest()
+            local Max, Close = math.huge
+            for I,V in pairs(Players:GetPlayers()) do
+                if V ~= LocalPlayer and V.Team ~= LocalPlayer.Team and CharTable[V] then
+                    local Pos, OnScreen = Camera:WorldToScreenPoint(CharTable[V].HumanoidRootPart.Position)
+                    if OnScreen then
+                        local Dist = (Vector2.new(Pos.X, Pos.Y) - Vector2.new(Mouse.X, Mouse.Y)).Magnitude
+                        if Dist < Max then
+                            Max = Dist
+                            Close = V
+                        end
+                    end
+                end
+            end
+            return Close
+        end
+        local MT = getrawmetatable(game)
+        local __index = MT.__index
+        setreadonly(MT, false)
+        MT.__index = newcclosure(function(self, K)
+            if not checkcaller() and GameLogic.currentgun and GameLogic.currentgun.data and (self == GameLogic.currentgun.barrel or tostring(self) == "SightMark") and K == "CFrame" then
+                local CharChosen = (CharTable[Closest()] and CharTable[Closest()].head)
+                if CharChosen then
+                    local _, Time = Trajectory(self.Position, Vector3.new(0, -workspace.Gravity, 0), CharChosen.Position, GameLogic.currentgun.data.bulletspeed)
+                    return CFrame.new(self.Position, CharChosen.Position + (Vector3.new(0, -workspace.Gravity / 2, 0)) * (Time ^ 2) + (CharChosen.Velocity * Time))
+                end
+            end
+            return __index(self, K)
+        end)
+        setreadonly(MT, true)
+        print("Clicked")
+    end)
+    
+    
+    local Gun = Window:NewTab("Gun")
+    local GunSection = Gun:NewSection("Gun") 
+    
+    GunSection:NewButton("Rainbow Gun", "Makes your gun rainbow", function() 
+        loadstring(game:HttpGet('https://pastebin.com/raw/3aKUrGRF'))()
+        print("Clicked")
+    end) 
+
+    local Esp = Window:NewTab("Esp")
+    local EspSection = Esp:NewSection("Esp")    
+    
+    EspSection:NewButton("Esp (Not Mine)", "Makes you see through walls", function() 
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/ic3w0lf22/Unnamed-ESP/master/UnnamedESP.lua', true))()  
+    end) 
+    
+    MainSection:NewKeybind("Toggle ui", "KeybindInfo", Enum.KeyCode.F, function()
+	    Library:ToggleUI()
+    end)
 end
-
-
-    
-   
-
-    
-
-    
-
-        
-
-
-
-
-      
-
-
-    
-
-    
-
-        
-
-
-
-
-      
-
-
-
-
-
-
-
-
-
-
-
+       
+        		
