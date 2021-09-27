@@ -46,9 +46,9 @@ if game.PlaceId == 3956818381 then
     local Window = Library.CreateLib("Tevita Gui", "Synapse") 
     
     local Main = Window:NewTab("Main")
-    local MainSection = Main:NewSection("Main") 
+    local Section = Main:NewSection("Main") 
     
-     MainSection:NewToggle("AutoSwings", "auto swings for you", function(state)
+    MainSection:NewToggle("AutoSwings", "auto swings for you", function(state)
         if state then 
             autoTap = state 
             doTap()
@@ -299,216 +299,484 @@ elseif game.PlaceId == 155615604 then
         print("Clicked")
     end) 
 
-elseif game.PlaceId == 5977280685 then 
-    getgenv().autoFarm = false
-    getgenv().autobuy = false 
-    getgenv().autobuy2 = false 
+
+elseif game.PlaceId == 5490351219 then 
+    getgenv().autoClick = false
+    getgenv().autoReb = false
+    getgenv().autoEgg = false
     
-    function doBuy2() 
+    function doEgg() 
         spawn(function() 
-            while autobuy2 == true do 
-                local args = {[1] = "buyAllItems",[2] = {["whichItems"] = "Swords", ["whichPlanet"] = "Ground",},}
-                game:GetService("Players").tevitamou.saberEvent:FireServer(unpack(args))
-                wait(0.5) 
+            while autoEgg == true do 
+                local args = {[1] = v,}
+                game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.EggService.Purchase:FireServer(unpack(args))
+                wait() 
+                
             end 
         end) 
-    end  
+    end 
     
-    function dobuy() 
+    function doClick() 
         spawn(function() 
-            while autobuy == true do 
-                local args = {[1] = "buyAllItems",[2] = {["whichItems"] = "Crystals",["whichPlanet"] = "Ground",},}
-                game:GetService("Players").tevitamou.saberEvent:FireServer(unpack(args))
-                wait(0.5) 
+            while autoClick == true do 
+                local clickMod = require(game:GetService("Players").tevitamou.PlayerScripts.Aero.Controllers.UI.Click)
+                clickMod:Click() 
+                wait() 
             end 
         end) 
-    end
+    end 
     
-    function doFarm() 
+    function doReb() 
         spawn(function() 
-            while autoFarm == true do 
-                local args = {[1] = "swingBlade",}
-                game:GetService("Players").tevitamou.saberEvent:FireServer(unpack(args)) 
+            while autoReb == true do 
+                local args = {[1] = currentOption,}
+                game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths:FireServer(unpack(args))    
                 wait(0.5) 
             end 
         end) 
     end 
     
-    local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))() 
-    local Window = Library.CreateLib("Ninja legends 2", "Sentinel") 
-    local Main = Window:NewTab("TabName") 
-    local MainSection = Main:NewSection("Main") 
-    
-        MainSection:NewToggle("Auto Blade", "Swings for you", function(state)
-        if state then 
-            autoFarm = state 
-            doFarm()
-            print("Toggle On")
-        else 
-            autoFarm = false
-            print("Toggle Off")
-        end
-    end)  
-
-        MainSection:NewToggle("Auto Blade", "Buys Blades for you", function(state)
-        if state then 
-            autobuy2 = state 
-            doBuy2()
-            print("Toggle On")
-        else 
-            autobuy2 = false
-            print("Toggle Off")
-        end
-    end) 
-
-        MainSection:NewToggle("AutoCrystal", "auto buys Crytals for you", function(state)
-        if state then 
-            autobuy = state 
-            dobuy()
-            print("Toggle On")
-        else 
-            autobuy = true
-            print("Toggle Off")
-        end
-    end) 
-elseif game.PlaceId == 292439477 then 
     local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-    local Window = Library.CreateLib("Phantom Forces", "Sentinel") 
-    local Main = Window:NewTab("Main")
-    local MainSection = Main:NewSection("Main") 
+    local Window = Library.CreateLib("TITLE", "DarkTheme")     
+    local Main = Window:NewTab("Main") 
+    local Section = Main:NewSection("Main") 
     
-    MainSection:NewButton("Silent Aim", "When you aim near someone it hits someone", function() 
-        -- Credits to integerisqt!
-        -- Have a great day!
-        local Players = game:GetService("Players")
-        local Camera = workspace.CurrentCamera
-        local LocalPlayer = Players.LocalPlayer
-        local Mouse = LocalPlayer:GetMouse()
-        local GameLogic, CharTable, Trajectory
-        for I,V in pairs(getgc(true)) do
-            if type(V) == "table" then
-                if rawget(V, "gammo") then
-                    GameLogic = V
-                end
-            elseif type(V) == "function" then
-                if debug.getinfo(V).name == "getbodyparts" then
-                    CharTable = debug.getupvalue(V, 1)
-                elseif debug.getinfo(V).name == "trajectory" then
-                    Trajectory = V
-                end
-            end
-            if GameLogic and CharTable and Trajectory then break end
+    Section:NewToggle("Auto Clicker", "Clicks for you", function(state)
+        if state then 
+            autoClick = state 
+            doClick()
+            print("Toggle On")
+        else
+            autoClick = false
+            print("Toggle Off")
         end
-        
-        local function Closest()
-            local Max, Close = math.huge
-            for I,V in pairs(Players:GetPlayers()) do
-                if V ~= LocalPlayer and V.Team ~= LocalPlayer.Team and CharTable[V] then
-                    local Pos, OnScreen = Camera:WorldToScreenPoint(CharTable[V].head.Position) 
-                    if OnScreen then
-                        local Dist = (Vector2.new(Pos.X, Pos.Y) - Vector2.new(Mouse.X, Mouse.Y)).Magnitude
-                        if Dist < Max then
-                            Max = Dist
-                            Close = V
-                        end
-                    end
-                end
-            end
-            return Close
-        end
-        local MT = getrawmetatable(game)
-        local __index = MT.__index
-        setreadonly(MT, false)
-        MT.__index = newcclosure(function(self, K)
-            if not checkcaller() and GameLogic.currentgun and GameLogic.currentgun.data and (self == GameLogic.currentgun.barrel or tostring(self) == "SightMark") and K == "CFrame" then
-                local CharChosen = (CharTable[Closest()] and CharTable[Closest()].head)
-                if CharChosen then
-                    local _, Time = Trajectory(self.Position, Vector3.new(0, -workspace.Gravity, 0), CharChosen.Position, GameLogic.currentgun.data.bulletspeed)
-                    return CFrame.new(self.Position, CharChosen.Position + (Vector3.new(0, -workspace.Gravity / 2, 0)) * (Time ^ 2) + (CharChosen.Velocity * Time))
-                end
-            end
-            return __index(self, K)
-        end)
-        setreadonly(MT, true)
-                print("Clicked")
-            end) 
-        
+    end) 
     
-    MainSection:NewButton("Silent Aim (body)", "ButtonInfo", function() 
-        -- Credits to integerisqt!
-        -- Have a great day!
-        local Players = game:GetService("Players")
-        local Camera = workspace.CurrentCamera
-        local LocalPlayer = Players.LocalPlayer
-        local Mouse = LocalPlayer:GetMouse()
-        local GameLogic, CharTable, Trajectory
-        for I,V in pairs(getgc(true)) do
-            if type(V) == "table" then
-                if rawget(V, "gammo") then
-                    GameLogic = V
-                end
-            elseif type(V) == "function" then
-                if debug.getinfo(V).name == "getbodyparts" then
-                    CharTable = debug.getupvalue(V, 1)
-                elseif debug.getinfo(V).name == "trajectory" then
-                    Trajectory = V
-                end
+   
+    local Section = Main:NewSection("Rebirth")
+    Section:NewToggle("1", "Rebirths Once", function(state)
+        if state then
+            _G.Condition = true -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 1
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
             end
-            if GameLogic and CharTable and Trajectory then break end
+        else
+            _G.Condition = false -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 1
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
         end
-        
-        local function Closest()
-            local Max, Close = math.huge
-            for I,V in pairs(Players:GetPlayers()) do
-                if V ~= LocalPlayer and V.Team ~= LocalPlayer.Team and CharTable[V] then
-                    local Pos, OnScreen = Camera:WorldToScreenPoint(CharTable[V].HumanoidRootPart.Position)
-                    if OnScreen then
-                        local Dist = (Vector2.new(Pos.X, Pos.Y) - Vector2.new(Mouse.X, Mouse.Y)).Magnitude
-                        if Dist < Max then
-                            Max = Dist
-                            Close = V
-                        end
-                    end
-                end
-            end
-            return Close
-        end
-        local MT = getrawmetatable(game)
-        local __index = MT.__index
-        setreadonly(MT, false)
-        MT.__index = newcclosure(function(self, K)
-            if not checkcaller() and GameLogic.currentgun and GameLogic.currentgun.data and (self == GameLogic.currentgun.barrel or tostring(self) == "SightMark") and K == "CFrame" then
-                local CharChosen = (CharTable[Closest()] and CharTable[Closest()].head)
-                if CharChosen then
-                    local _, Time = Trajectory(self.Position, Vector3.new(0, -workspace.Gravity, 0), CharChosen.Position, GameLogic.currentgun.data.bulletspeed)
-                    return CFrame.new(self.Position, CharChosen.Position + (Vector3.new(0, -workspace.Gravity / 2, 0)) * (Time ^ 2) + (CharChosen.Velocity * Time))
-                end
-            end
-            return __index(self, K)
-        end)
-        setreadonly(MT, true)
-        print("Clicked")
     end)
     
+    Section:NewToggle("10", "Rebirths 10 times", function(state)
+        if state then
+            _G.Condition = true -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 10
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        else
+            _G.Condition = false -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 10
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        end
+    end)
     
-    local Gun = Window:NewTab("Gun")
-    local GunSection = Gun:NewSection("Gun") 
+    Section:NewToggle("100", "Rebirths 100 times", function(state)
+        if state then
+            _G.Condition = true -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 100
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        else
+            _G.Condition = false -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 100
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        end
+    end)
     
-    GunSection:NewButton("Rainbow Gun", "Makes your gun rainbow", function() 
-        loadstring(game:HttpGet('https://pastebin.com/raw/3aKUrGRF'))()
-        print("Clicked")
+    Section:NewToggle("1k", "Rebirths 1000 times", function(state)
+        if state then
+            _G.Condition = true -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 1000
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        else
+            _G.Condition = false -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 1000
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        end
+    end)
+    
+    Section:NewToggle("10k", "Rebirths 10,000 times", function(state)
+        if state then
+            _G.Condition = true -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 10000
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        else
+            _G.Condition = false -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 10000
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        end
+    end)
+    
+    Section:NewToggle("100k", "Rebirths 100000 times", function(state)
+        if state then
+            _G.Condition = true -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 100000
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        else
+            _G.Condition = false -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 100000
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        end
+    end)
+    
+    Section:NewToggle("1M", "Rebirths 1000000 times", function(state)
+        if state then
+            _G.Condition = true -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 1000000
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        else
+            _G.Condition = false -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 1000000
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        end
+    end)
+    
+    Section:NewToggle("10M", "Rebirths 10M times", function(state)
+        if state then
+            _G.Condition = true -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 10000000
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        else
+            _G.Condition = false -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 10000000
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        end
+    end)
+    
+    Section:NewToggle("1B", "Rebirths 1B times", function(state)
+        if state then
+            _G.Condition = true -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 1000000000
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        else
+            _G.Condition = false -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 1000000000
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        end
+    end)
+    
+    Section:NewToggle("10B", "Rebirths 10B times", function(state)
+        if state then
+            _G.Condition = true -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 10000000000
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        else
+            _G.Condition = false -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 10000000000
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        end
+    end)
+    
+    Section:NewToggle("100B", "Rebirths 10B times", function(state)
+        if state then
+            _G.Condition = true -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 100000000000
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        else
+            _G.Condition = false -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 100000000000
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        end
+    end)
+    
+    Section:NewToggle("1T", "Rebirths 1T times", function(state)
+        if state then
+            _G.Condition = true -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 1000000000000
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        else
+            _G.Condition = false -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = 1000000000000
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.RebirthService.BuyRebirths
+            Event:FireServer(A_1)
+            wait()
+            end
+        end
+    end)
+    
+
+    local Tab = Window:NewTab("Upgrades")
+    local Section = Tab:NewSection("Shop Upgrades (All of these Costs Gems)")
+    
+    Section:NewToggle("Click Multiplier", "Auto Buy Click Multiplier", function(state)
+        if state then
+            _G.Condition = true -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = "ClickMultiply"
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.UpgradeService.BuyUpgrade
+            Event:FireServer(A_1)
+            wait()
+            end
+        else
+            _G.Condition = false -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = "ClickMultiply"
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.UpgradeService.BuyUpgrade
+            Event:FireServer(A_1)
+            wait()
+            end
+        end
+    end)
+    
+    Section:NewToggle("Cursor Damage", "Auto Buy Cursor Damage", function(state)
+        if state then
+            _G.Condition = true -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = "CursorDamage"
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.UpgradeService.BuyUpgrade
+            Event:FireServer(A_1)
+            wait()
+            end
+        else
+            _G.Condition = false -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = "CursorDamage"
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.UpgradeService.BuyUpgrade
+            Event:FireServer(A_1)
+            wait()
+            end
+        end
+    end)
+    
+    Section:NewToggle("Health", "Auto Buy Health Upgrade", function(state)
+        if state then
+            _G.Condition = true -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = "Health"
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.UpgradeService.BuyUpgrade
+            Event:FireServer(A_1)
+            wait()
+            end
+        else
+            _G.Condition = false -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = "Health"
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.UpgradeService.BuyUpgrade
+            Event:FireServer(A_1)
+            wait()
+            end
+        end
+    end)
+    
+    Section:NewToggle("Jump Upgrade", "Auto Buy Jump Updgrades", function(state)
+        if state then
+            _G.Condition = true -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = "JumpPower"
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.UpgradeService.BuyUpgrade
+            Event:FireServer(A_1)
+            wait()
+            end
+        else
+            _G.Condition = false -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = "JumpPower"
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.UpgradeService.BuyUpgrade
+            Event:FireServer(A_1)
+            wait()
+            end
+        end
+    end)
+    
+    Section:NewToggle("Pet Storage", "Auto Buy Pet Storage", function(state)
+        if state then
+            _G.Condition = true -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = "PetStorage"
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.UpgradeService.BuyUpgrade
+            Event:FireServer(A_1)
+            wait()
+            end
+        else
+            _G.Condition = false -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = "PetStorage"
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.UpgradeService.BuyUpgrade
+            Event:FireServer(A_1)
+            wait()
+            end
+        end
+    end)
+    
+    Section:NewToggle("Speed Updgrade (just use the one in misc)", "Auto Buy Walkspeed", function(state)
+        if state then
+            _G.Condition = true -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = "PetStorage"
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.UpgradeService.BuyUpgrade
+            Event:FireServer(A_1)
+            wait()
+            end
+        else
+            _G.Condition = false -- true turns it on, false turns it off
+            while _G.Condition == true do
+            local A_1 = "PetStorage"
+            local Event = game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.UpgradeService.BuyUpgrade
+            Event:FireServer(A_1)
+            wait()
+            end
+        end
+    end)
+    
+    local Tab = Window:NewTab("Teleports")
+    local Section = Tab:NewSection("Teleport Locations")
+    
+    Section:NewButton("King Of Hill", "hi", function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(546.53064, 32.5750542, -173.389252)
+    end)
+    
+    Section:NewButton("Boss", "how", function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(748.271484, 9.2008543, -274.674805)
+    end)
+    
+    Section:NewButton("Chest", "are", function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(623.256104, 9.67012691, -345.602203)
+    end)
+    
+    Section:NewButton("Rebith Shop (more rebirths here)", "you", function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(483.421722, 9.22905445, -338.502625)
+    end)
+    
+    Section:NewButton("Upgrade Shop", ":)", function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(493.48526, 9.5162096, -312.879272)
+    end)
+    
+    local Tab = Window:NewTab("Misc.")
+    local Section = Tab:NewSection("Miscellaneous")
+    
+    Section:NewSlider("WalkSpeed", "Modifies the Walk Speed", 500, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
+    end)
+    
+    Section:NewSlider("Jump Power", "Modifies the Jump Power", 500, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
+        game.Players.LocalPlayer.Character.Humanoid.JumpPower = s
+    end)
+    
+    Section:NewButton("Ctrl Click Teleport", "I dont know what to put here :p", function()
+        local Plr = game:GetService("Players").LocalPlayer
+        local Mouse = Plr:GetMouse()
+        Mouse.Button1Down:connect(function()
+        if not game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.LeftControl) then return end
+        if not Mouse.Target then return end
+        Plr.Character:MoveTo(Mouse.Hit.p)
+        end)
     end) 
 
-    local Esp = Window:NewTab("Esp")
-    local EspSection = Esp:NewSection("Esp")    
-    
-    EspSection:NewButton("Esp (Not Mine)", "Makes you see through walls", function() 
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/ic3w0lf22/Unnamed-ESP/master/UnnamedESP.lua', true))()  
+    Section:NewToggle("Noclip", "Makes you go through walls", function(state)
+        if state then 
+            noclip = state
+            game:GetService('RunService').Stepped:connect(function()
+            if noclip then
+            game.Players.LocalPlayer.Character.Humanoid:ChangeState(11)
+            end
+            end)
+            plr = game.Players.LocalPlayer
+            mouse = plr:GetMouse()
+            
+            print("Toggle On")
+        else 
+            noclip = false
+            print("Toggle Off")
+        end
     end) 
-    
-    MainSection:NewKeybind("Toggle ui", "KeybindInfo", Enum.KeyCode.F, function()
-	    Library:ToggleUI()
-    end)
-end
-       
-        		
+end  
