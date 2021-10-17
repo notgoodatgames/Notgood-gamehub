@@ -817,4 +817,8 @@ elseif game.PlaceId == 5490351219 then
            _G.infinjump = false
         end
     end) 
+	Section:NewButton("Fly (E to toggle)", "Lets you fly", function() 
+    loadstring(game:HttpGet("https://pastebin.com/raw/7rXZ9VNc", true))()
+    print("Clicked")
+end)
 end  
