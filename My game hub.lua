@@ -781,15 +781,36 @@ elseif game.PlaceId == 5490351219 then
     end)  
 	Section:NewToggle("Inf Jump", "What do i put here", function(state)
         if state then 
-            _G.InfJump = state 
-            while true do 
-                local Player = game:GetService("Players").LocalPlayer
-                local Mouse = Player:GetMouse()
-                Humanoid = game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-                Humanoid:ChangeState("Jumping")
-                wait(0.1)
-                Humanoid:ChangeState("Seated")
-            end
+          	-- by isaraw8912 and yes i did paste this
+		-- Press [R] to turn off and to turn on
+
+		_G.infinjump = true
+
+		local Player = game:GetService("Players").LocalPlayer
+		local Mouse = Player:GetMouse()
+		Mouse.KeyDown:connect(function(k)
+		if _G.infinjump then
+		if k:byte() == 32 then
+		Humanoid = game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+		Humanoid:ChangeState("Jumping")
+		wait(0.1)
+		Humanoid:ChangeState("Seated")
+		end
+		end
+		end)
+
+		local Player = game:GetService("Players").LocalPlayer
+		local Mouse = Player:GetMouse()
+		Mouse.KeyDown:connect(function(k)
+		k = k:lower()
+		if k == "r" then
+		if _G.infinjump == true then
+		_G.infinjump = false
+		else
+		_G.infinjump = true
+		end
+		end
+		end)
        
              print("Toggle On")
         else 
