@@ -319,7 +319,7 @@ elseif game.PlaceId == 5490351219 then
     function doClick() 
         spawn(function() 
             while autoClick == true do 
-                local clickMod = require(game:GetService("Players").tevitamou.PlayerScripts.Aero.Controllers.UI.Click)
+                local clickMod = require(game:GetService("Players").LocalPlayer.PlayerScripts.Aero.Controllers.UI.Click)
                 clickMod:Click() 
                 wait() 
             end 
@@ -817,7 +817,7 @@ elseif game.PlaceId == 5490351219 then
            _G.infinjump = false
         end
     end) 
-  Section:NewButton("Ctrl Click Teleport", "I dont know what to put here :p", function()
+  Section:NewButton("Fly(E to toggle)", "I dont know what to put here :p", function()
        loadstring(game:HttpGet("https://pastebin.com/raw/7rXZ9VNc", true))()
     end) 
 end  
