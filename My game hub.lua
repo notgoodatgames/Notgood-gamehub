@@ -778,16 +778,21 @@ elseif game.PlaceId == 5490351219 then
             noclip = false
             print("Toggle Off")
         end
-    end) 
-	    Section:NewToggle("Inf Jump", "What do i put here", function(state)
+    end)  
+	Section:NewToggle("Inf Jump", "What do i put here", function(state)
         if state then 
             _G.InfJump = state 
-            while true do
-                game:GetService("UserInputService").JumpRequest:connect(function()
-                game:GetService"Players".LocalPlayer.Character:FindFirstChildOfClass'Humanoid':ChangeState("Jumping")       
-                end) 
-                end
-            print("Toggle On")
+            while true do 
+                local Player = game:GetService("Players").LocalPlayer
+                local Mouse = Player:GetMouse()
+                if k:byte() == 32 then
+                Humanoid = game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+                Humanoid:ChangeState("Jumping")
+                wait(0.1)
+                Humanoid:ChangeState("Seated")
+            end
+        end
+             print("Toggle On")
         else 
            _G.InfJump = false
         end
