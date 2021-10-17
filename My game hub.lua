@@ -779,4 +779,17 @@ elseif game.PlaceId == 5490351219 then
             print("Toggle Off")
         end
     end) 
+	    Section:NewToggle("Inf Jump", "What do i put here", function(state)
+        if state then 
+            _G.InfJump = state 
+            while true do
+                game:GetService("UserInputService").JumpRequest:connect(function()
+                game:GetService"Players".LocalPlayer.Character:FindFirstChildOfClass'Humanoid':ChangeState("Jumping")       
+                end) 
+                end
+            print("Toggle On")
+        else 
+           _G.InfJump = false
+        end
+    end) 
 end  
