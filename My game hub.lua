@@ -784,7 +784,7 @@ elseif game.PlaceId == 5490351219 then
           	-- by isaraw8912 and yes i did paste this
 		-- Press [R] to turn off and to turn on
 
-		_G.infinjump = true
+		_G.infinjump = state
 
 		local Player = game:GetService("Players").LocalPlayer
 		local Mouse = Player:GetMouse()
@@ -814,7 +814,7 @@ elseif game.PlaceId == 5490351219 then
        
              print("Toggle On")
         else 
-           _G.InfJump = false
+           _G.infinjump = false
         end
     end) 
 end  
